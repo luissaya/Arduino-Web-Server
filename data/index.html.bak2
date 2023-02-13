@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="./sldierElement.css">
+    <link rel="stylesheet" type="text/css" href="./floatButton.css">
+    <script src="iot-widget.min.js"></script>
+    <script src="sliderManager.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="UTF-8">
+  <title>Camel Smart Motor</title>
+
+    <style>
+        html {
+            height: 100%;
+			text-align: center;
+        }
+		p { 
+		  font-size: 1.4rem;
+		}
+		.topnav { 
+		  overflow: hidden; 
+		  background-color: #0A1128;
+		}
+		body {  
+		  margin: 0;
+		}
+        body {
+            height: 100%;
+
+            background: #ADD8E6; /* fallback for old browsers */
+            /*background: -webkit-linear-gradient(right, #76b852, #8DC26F);*/
+            /*background: -moz-linear-gradient(right, #76b852, #8DC26F);*/
+            /*background: -o-linear-gradient(right, #76b852, #8DC26F);*/
+            /*background: linear-gradient(to left, #76b852, #8DC26F);*/
+        }
+
+        .titleContainer {
+            font-size:  6vw;;
+            text-align: center;
+            width: 100%;
+            height: 16%;
+            /*padding: 10px;*/
+        }
+		
+        .sliderContainer {
+			text-align: center;
+            height: 84%;
+            position: relative;
+        }
+
+		.switch {
+		  position: relative;
+		  display: inline-block;
+		  width: 60px;
+		  height: 34px;
+		}
+
+		
+		.switch input {
+		  opacity: 0;
+		  width: 0;
+		  height: 0;
+		}
+
+		.slider {
+		  position: absolute;
+		  cursor: pointer;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  background-color: #ccc;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		.slider:before {
+		  position: absolute;
+		  content: "";
+		  height: 26px;
+		  width: 26px;
+		  left: 4px;
+		  bottom: 4px;
+		  background-color: white;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		input:checked + .slider {
+		  background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+		  box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+		-webkit-transform: translateX(26px);
+		-ms-transform: translateX(26px);
+		transform: translateX(26px);
+		}
+		
+
+		.slider.round {
+		  border-radius: 34px;
+		  background-color: #ccc;
+		}
+
+		.slider.round:before {
+		  border-radius: 50%;
+		}
+		body {  
+		  margin: 0;
+		}
+		.content { 
+		  padding: 5%;
+		}
+		.card-grid { 
+		  max-width: 1200px; 
+		  margin: 0 auto; 
+		  /*margin-left: auto;*/
+		  /*margin-right: auto;*/
+		  /*width: 8em;*/
+		  display: grid; 
+		  grid-gap: 2rem; 
+		  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		}
+		.card { 
+		  background-color: white; 
+		  box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
+		}
+		.card-title { 
+		  font-size: 2.1rem;
+		  font-family: Arial, Helvetica, sans-serif; 
+		  display: inline-block; 
+		  text-align: center;
+		  font-weight: bold;
+		  color: #034078
+		}
+		.card-title2 { 
+		  font-size: 1.5rem;
+		  font-family: Arial, Helvetica, sans-serif; 
+		  text-align: center;
+		  font-weight: bold;
+		  color: #034078
+		}
+		.container {
+			/*height: 300px;*/
+			/*display: flex;*/
+			align-items: center;
+			justify-content: center;
+		}
+		h2 {
+		font-size: 1.0rem; 
+		color: white;
+		}
+		
+		.white_bg {
+		 font-size: 1.5rem;
+		  font-family: Arial, Helvetica, sans-serif; 
+		background-color: #006400;
+		padding: 5px; /*add this if you want a bit of space around the text*/
+		}
+		a.c1 {
+			padding: 5px;
+			border-radius: 5px;
+		}
+		a.c1:link {
+			border:#006400 1px solid ;
+			color: black;
+			text-decoration: none;
+		}
+		a.c1:hover {
+			color: white;
+			background-color: black;
+		}
+		.extra01 {
+			font-size: small;
+		}
+		button.c1 {
+			right: 4px;
+			top: 4px;
+			position: absolute;
+			background-color: white;
+		}
+    </style>
+</head>
+<body>
+<div class="content">
+	<div id="div_status">
+		<div class="card" >
+			<button class="c1" id="bt_show_settings">Go to setup</button>
+			<div><p class="card-title">~~Water Level~~</p></div>
+			<div class="container">
+				<div style="width: 80%;max-width: 460px; height:60%; text-align: center; display: inline-block;" class="humidity-container" id="humidity-container"></div>
+			</div>
+			<div>
+				<p class="card-title2">Motor Switch</p>
+				<label class="switch" id="enableBt2" >
+					<input type="checkbox" onchange="myFunction()" id="enableBt">
+					<span class="slider round"></span>
+					</label>
+				</div>
+			<div><span id="element_extra" class="extra01"></span></div>
+			<div><span id="element_cooldown"></span></div>
+			<h2> <p <span class="white_bg"><u/>AppTech Creators,  DHURI</p> </u> </h2>
+		</div>
+	</div>
+	<div id="div_settings" style="display: none;">
+		<button class="c1" id="bt_show_status">Go to main</button>
+		<div class="card" >
+			<p class="card-title">Alarms</p>
+			<p class="card-title2">Alarm 1</p>
+			<p><label><input id="input_alarm1TODsec" type="time"/></label><input type="checkbox" id="input_alarm1Enabled"></p>
+			<p class="card-title2">Alarm 2</p>
+			<p><label><input id="input_alarm2TODsec" type="time"/></label><input type="checkbox" id="input_alarm2Enabled"></p>
+			&nbsp;
+		</div>
+		&nbsp;
+		<div class="card" >
+			<p class="card-title">Tank</p>
+			<p class="card-title2">Height (cm)</p>
+			<p>Min-130<label><input id="input_tankBottomCm" type="range" min="130" max="210" step="5"/></label>Max-210 <span id="value_tankBottomCm">(___cm)</span></p>
+			<h2> <p <span class="white_bg"><u/>AppTech Creators,  DHURI</p> </u> </h2>
+		</div>
+	</div>
+	&nbsp;
+</div>
+<script>
+    var sliderElement = document.getElementById('slider');
+    var sliderImageElements = document.querySelectorAll(".slide-wrapper");
+    var holderElement = document.querySelector(".holder");
+    var animateElements = document.querySelectorAll('.animate');
+
+   
+
+    var container = document.getElementById('humidity-container');
+    var hw = new Widget.Humidity(container, 0);
+    hw.draw();
+	var motorEnabled;
+
+</script>
+	
+    <script>
+let showAllStatus = false;
+let logAllStatus = false;
+function DGEBID(id) {return document.getElementById(id);}
+function getCookie(name) {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function myFunction() {
+	//value1=2;
+	//motorEnabled=!motorEnabled;
+	//if(motorEnabled)	document.getElementById("enableBt").style.color = "green";
+	//else {document.getElementById("enableBt").style.color = "red";}
+	var xhr = new XMLHttpRequest();
+	if(motorEnabled)xhr.open("GET", "/off", true);
+	else xhr.open("GET", "/on", true);
+	xhr.send();
+}
+function getURL(url) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+
+function getURLSync(url, value_read_callback, default_value) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, false);
+	if (value_read_callback) {
+		xhr.onreadystatechange = function (evt) {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				if (xhr.status == 200)
+					value_read_callback(true, xhr.status, JSON.parse(xhr.responseText));
+				else
+					value_read_callback(false, xhr.status, default_value);
+			}
+		};
+	}
+	xhr.send();
+}
+
+let setting_inputs = [];
+let setting_refreshers = [];
+function setting_refresh() {
+	setting_refreshers.forEach(p => {try {p();} catch(e){console.error(e);}});
+}
+function setting_disable() {
+	setting_inputs.forEach(p => p.disabled = true);
+}
+
+function cfgCheckbox(name) {
+	let inpt = DGEBID('input_'+ name);
+	setting_inputs.push(inpt);
+	inpt.addEventListener('change', evt => getURL('/' + name + '/' + (evt.target.checked ? 'true' : 'false')));
+	setting_refreshers.push(() => getURLSync('/' + name, (is_ok, value_read_callback, value) => {
+		inpt.checked = value;
+		inpt.disabled = false;
+	}, false));
+}
+function cfgTOD(name) {
+	let inpt = DGEBID('input_'+ name);
+	setting_inputs.push(inpt);
+	inpt.addEventListener('change', evt => getURL('/' + name + '/' + (evt.target.value.split(':').map(p=>parseInt(p)).reduce((a,p) => a * 60 + p) * 60)));
+	setting_refreshers.push(() => getURLSync('/' + name, (is_ok, value_read_callback, value) => {
+		value = parseInt(value / 60);
+		inpt.value = ((100 + parseInt(value / 60)) + '').substring(1) + ':' + ((100 + parseInt(value % 60)) + '').substring(1);
+		inpt.disabled = false;
+	}, 0));
+}
+function cfgTkLv(name) {
+	console.log(name);
+	let inpt = DGEBID('input_'+ name);
+	setting_inputs.push(inpt);
+	let vld = DGEBID('value_'+ name);
+	console.log(inpt, vld);
+	inpt.addEventListener('change', evt => {vld.innerText = '(' + evt.target.value + 'cm)'; console.log(vld, vld.innerText, evt.target.value); getURL('/' + name + '/' + evt.target.value); });
+	setting_refreshers.push(() => getURLSync('/' + name, (is_ok, value_read_callback, value) => {
+		inpt.value = '(' + value + 'cm)';
+		vld.innerText = value;
+		inpt.disabled = false;
+	}, -1));
+}
+DGEBID('bt_show_status').addEventListener	('click', evt => {DGEBID('div_status').style.display = 'block'; DGEBID('div_settings').style.display = 'none';})
+DGEBID('bt_show_settings').addEventListener	('click', evt => {
+	DGEBID('div_status').style.display = 'none'; DGEBID('div_settings').style.display = 'block';
+	setting_disable();
+	setting_refresh();
+});
+cfgTkLv('tankBottomCm');
+cfgCheckbox('alarm1Enabled');
+cfgCheckbox('alarm2Enabled');
+cfgTOD('alarm1TODsec');
+cfgTOD('alarm2TODsec');
+//cfgTkLv('tankTopCm');
+
+var token = getCookie('ESPSESSIONID');
+//debugger
+function debounce(fn, threshold) {
+	threshold = threshold || 300;
+	var timer;
+	return function() {
+		if (!timer) {
+			fn.apply(this, arguments);
+		}
+		clearTimeout(timer);
+		timer = setTimeout(function() {
+			timer = null;
+		}, threshold);
+	};
+};
+
+var requestTempHum = function(){
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			// Typical action to be performed when the document is ready:
+			var res = JSON.parse(xhttp.responseText);
+			hw.setHumidity(res.waterLevel);
+			var mot = res.motorStatus;
+			motorEnabled=mot;
+			if(motorEnabled)	document.getElementById("enableBt").checked = true;
+			else {document.getElementById("enableBt").checked = false;}
+			if (logAllStatus)
+				console.log(JSON.stringify(res, null, '  ' ))
+			DGEBID('element_cooldown').innerHTML = ((100 + parseInt(res.timerMotorAutoOff / 60)) + '').substring(1) + ':' + ((100 + parseInt(res.timerMotorAutoOff % 60)) + '').substring(1);
+			if (showAllStatus)
+				DGEBID('element_extra').innerHTML = "isTimeSyncronized:" + res.isTimeSynchronized + ". Cooldown:" + ((100 + parseInt(res.timerMotorCooldown / 60)) + '').substring(1) + ':' + ((100 + parseInt(res.timerMotorCooldown % 60)) + '').substring(1) + ". Time of day:" + ((100 + parseInt(res.tod / 3600)) + '').substring(1) + ':' + ((100 + parseInt((res.tod % 3600) / 60)) + '').substring(1)+ ':' + ((100 + parseInt(res.tod % 60)) + '').substring(1);
+		}
+	};
+	xhttp.onerror = function () {
+		//alert("Status code is " + this.status + " click F12 and check what is the problem on console");
+	};
+
+	xhttp.open("GET", "/temperatureHumidity", true);
+	xhttp.send();
+}
+
+var debouncedRequestTempHum = debounce(requestTempHum, 400);
+
+var refresh = function(){
+	debouncedRequestTempHum();
+}
+debouncedRequestTempHum();
+
+function polling() {
+	setTimeout(function () {
+		debouncedRequestTempHum();
+		polling();
+	}, 2500);
+}
+polling();
+    </script>
+    
+
+</body>
+</html>

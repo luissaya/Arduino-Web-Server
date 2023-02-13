@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="./sldierElement.css">
+    <link rel="stylesheet" type="text/css" href="./floatButton.css">
+    <script src="iot-widget.min.js"></script>
+    <script src="sliderManager.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="UTF-8">
+    <title>Temperature humidity www.mischianti.org</title>
+
+    <style>
+        html {
+            height: 100%;
+			text-align: center;
+        }
+		p { 
+		  font-size: 1.4rem;
+		}
+		.topnav { 
+		  overflow: hidden; 
+		  background-color: #0A1128;
+		}
+		body {  
+		  margin: 0;
+		}
+        body {
+            height: 100%;
+
+            background: #ffffff; /* fallback for old browsers */
+            //background: -webkit-linear-gradient(right, #76b852, #8DC26F);
+            //background: -moz-linear-gradient(right, #76b852, #8DC26F);
+            //background: -o-linear-gradient(right, #76b852, #8DC26F);
+            //background: linear-gradient(to left, #76b852, #8DC26F);
+        }
+
+        .titleContainer {
+            font-size:  6vw;;
+            text-align: center;
+            width: 100%;
+            height: 16%;
+            /*padding: 10px;*/
+        }
+		
+        .sliderContainer {
+			text-align: center;
+            height: 84%;
+            position: relative;
+        }
+
+		.switch {
+		  position: relative;
+		  display: inline-block;
+		  width: 60px;
+		  height: 34px;
+		}
+
+		
+		.switch input {
+		  opacity: 0;
+		  width: 0;
+		  height: 0;
+		}
+
+		.slider {
+		  position: absolute;
+		  cursor: pointer;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  //background-color: #ccc;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		.slider:before {
+		  position: absolute;
+		  content: "";
+		  height: 26px;
+		  width: 26px;
+		  left: 4px;
+		  bottom: 4px;
+		  background-color: white;
+		  -webkit-transition: .4s;
+		  transition: .4s;
+		}
+
+		input:checked + .slider {
+		  background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+		  box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+		  background-color: #2196F3;
+		  -webkit-transform: translateX(26px);
+		  -ms-transform: translateX(26px);
+		  transform: translateX(26px);
+		}
+
+		.slider.round {
+		  border-radius: 34px;
+		  background-color: #ccc;
+		}
+
+		.slider.round:before {
+		  border-radius: 50%;
+		}
+		body {  
+		  margin: 0;
+		}
+		.content { 
+		  padding: 5%;
+		}
+		.card-grid { 
+		  max-width: 1200px; 
+		  margin: 0 auto; 
+		  //margin-left: auto;
+		  //margin-right: auto;
+		  //width: 8em
+		  display: grid; 
+		  grid-gap: 2rem; 
+		  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		}
+		.card { 
+		  background-color: white; 
+		  box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
+		}
+		.card-title { 
+		  font-size: 1.2rem;
+		  font-weight: bold;
+		  color: #034078
+		}
+		.container {
+			height: 300px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+    </style>
+</head>
+<body>
+<div class="content"> 
+	<div class="card" >
+	  <p class="card-title">Water Level</p>
+		  <div class="container">
+			<div style="width: 80%;max-width: 300px; height:60%%;" class="humidity-container" id="humidity-container"></div>
+		  </div>
+	  <div class="card" >
+		  <p class="card-title">Motor Enable</p>
+		  <label class="switch" id="enableBt2" >
+			<input type="checkbox" onchange="myFunction()" id="enableBt">
+			<span class="slider round"></span>
+		  </label>
+	  </div>
+	</div>
+</div>
+<script>
+    var sliderElement = document.getElementById('slider');
+    var sliderImageElements = document.querySelectorAll(".slide-wrapper");
+    var holderElement = document.querySelector(".holder");
+    var animateElements = document.querySelectorAll('.animate');
+
+   
+
+    var container = document.getElementById('humidity-container');
+    var hw = new Widget.Humidity(container, 0);
+    hw.draw();
+	var motorEnabled;
+
+</script>
+	
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+		
+		function myFunction() {
+			//value1=2;
+			//motorEnabled=!motorEnabled;
+			//if(motorEnabled)	document.getElementById("enableBt").style.color = "green";
+			//else {document.getElementById("enableBt").style.color = "red";}
+			var xhr = new XMLHttpRequest();
+			if(motorEnabled)xhr.open("GET", "/off", true);
+			else xhr.open("GET", "/on", true);
+			xhr.send();
+		}
+
+        var token = getCookie('ESPSESSIONID');
+         debugger
+        function debounce(fn, threshold) {
+            threshold = threshold || 300;
+            var timer;
+            return function() {
+                if (!timer) {
+                    fn.apply(this, arguments);
+                }
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    timer = null;
+                }, threshold);
+            };
+        };
+
+        var requestTempHum = function(){
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Typical action to be performed when the document is ready:
+                    var res = JSON.parse(xhttp.responseText);
+                    hw.setHumidity(res.waterLevel);
+					var mot = res.motorStatus;
+				    motorEnabled=mot;
+				    if(motorEnabled)	document.getElementById("enableBt").checked = true;
+				    else {document.getElementById("enableBt").checked = false;}
+                }
+            };
+            xhttp.onerror = function () {
+                //alert("Status code is " + this.status + " click F12 and check what is the problem on console");
+            };
+
+            xhttp.open("GET", "/temperatureHumidity", true);
+            xhttp.send();
+        }
+
+        var debouncedRequestTempHum = debounce(requestTempHum, 400);
+
+        var refresh = function(){
+            debouncedRequestTempHum();
+        }
+        debouncedRequestTempHum();
+
+        function polling() {
+            setTimeout(function () {
+                debouncedRequestTempHum();
+                polling();
+            }, 2500);
+        }
+        polling();
+    </script>
+    
+
+</body>
+</html>
