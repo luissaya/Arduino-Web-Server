@@ -464,17 +464,17 @@ void handleTemperatureHumidity() {
   //  doc["humidity"] = random(10,80);
   //  doc["temp"] = random(1000,3500)/100.;
   Serial.print("waterlevel : ");
-  Serial.println(doc["waterLevel"]);
+  Serial.println(liters);
   Serial.print("motorStatus : ";
-  Serial.println(doc["motorStatus"] );
+  Serial.println(motorEnabled);
   Serial.print("isTimeSynchronized :");
-  Serial.println(doc["isTimeSynchronized"]);
+  Serial.println(isTimeSynchronized);
   Serial.print("timerMotorAutoOff :");
-  Serial.println(doc["timerMotorAutoOff"]);
+  Serial.println(timerMotorAutoOff / 1000);
   Serial.print("timerMotorCooldown :");
-  Serial.println(doc["timerMotorCooldown"]);
+  Serial.println(timerMotorCooldown / 1000);
   Serial.print("tod :");
-  Serial.println(doc["tod"]);
+  Serial.println(tods_old);
 
 
   String buf;
