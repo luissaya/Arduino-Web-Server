@@ -119,13 +119,12 @@ void LoadFromEEPROM() {
   tankTopCm = 0;//EEPROM.get(EE_tankTopCm, tankTopCm);
   EEPROM.get(EE_tankBottomCm, tankBottomCm);
 }
+// Initialize WiFi
+void initWiFi() {
 
-  // Initialize WiFi
-  void initWiFi() {
-  
-    if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
-      Serial.println("STA Failed to configure");
-    }
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("STA Failed to configure");
+  }
 
   Serial.print("initializing Wi-Fi");
   WiFi.hostname(host);
@@ -134,128 +133,124 @@ void LoadFromEEPROM() {
   wm.setAPClientCheck(true); // avoid timeout if client connected to softap
   bool res = wm.autoConnect(host);
 
-    if (!res) {
-      Serial.println("Failed to connect or hit timeout");
-      digitalWrite(wifiPin, LOW);
-    }
-    else  Serial.println("connected with Wi-Fi");
-    digitalWrite(wifiPin, HIGH);
+  if (!res) {
+    Serial.println("Failed to connect or hit timeout");
+    digitalWrite(wifiPin, LOW);
   }
-  
-  // speed of the sound on meter per second (m/s)
-  #define SPEED_OF_SOUND 340
-  #define CM_PER_USEC_HALF (0.5 * SPEED_OF_SOUND / 1e4)
-  //
-  void ultrasonic () ///for calculating distance
-  {
-    digitalWrite(trigPin, LOW);
-    delayMicroseconds(2);
-    digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
-    duration = pulseIn(echoPin, HIGH);
-    //Serial.println("Trigger for 10 \n\n");
-    //Serial.println("duration calculated \n\n");
-    //Serial.println("assembling sonar\n\n");
-  
-    distance = duration * CM_PER_USEC_HALF;
-    float delta = tankTopCm - tankBottomCm;
-    delta = delta == 0 ? 0 : 1 / delta;
-    percent = 100 * (distance - tankBottomCm) * delta;
+  else  Serial.println("connected with Wi-Fi");
+  digitalWrite(wifiPin, HIGH);
+}
+// speed of the sound on meter per second (m/s)
+#define SPEED_OF_SOUND 340
+#define CM_PER_USEC_HALF (0.5 * SPEED_OF_SOUND / 1e4)
+//
+void ultrasonic () ///for calculating distance
+{
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  //Serial.println("Trigger for 10 \n\n");
+  //Serial.println("duration calculated \n\n");
+  //Serial.println("assembling sonar\n\n");
 
-    // debuging:
-    //Serial.println(String("durationX ") + duration + ", distance "+distance + " delta " +delta + ", percent " + percent);
-    //distance = 140;
-    //percent = 100 * (distance - tankBottomCm) * delta;
-    //Serial.println(String("durationX ") + duration + ", distance "+distance + " delta " +delta + ", percent " + percent + ", onAlarm1TODsec " + onAlarm1TODsec + ", onAlarm2TODsec " + onAlarm2TODsec);
-  }
-  void measure_Volume()
-  {
-    ultrasonic();
-    liters = percent;
-    //Serial.println(liters);
-  
-    if (liters <= waterLevelLowerThreshold)
-      waterLevelDownCount++;
-    else waterLevelDownCount = 0;
-  
-    if (liters >= waterLevelUpperThreshold)
-      waterLevelUpCount++;
-    else waterLevelUpCount = 0;
-  
-    if (waterLevelDownCount >= 3)
-      motorAutoOn();
-    if (waterLevelUpCount >= 3)
-      motorOff();
-    //if (waterLevelDownCount >= 3)
-    //{ //TURN ON RELAY
-    //  waterLevelDownCount = 0;
-    //  Serial.println("motor turned on");
-    //  digitalWrite(MOTOR_CONTROL_PIN, HIGH); //Relay is active HIGH
-    //  digitalWrite(LED, HIGH); // turn the LED on
-    //  motorEnabled = true;
-    //  timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
-    //}
-    //if (waterLevelUpCount >= 3)
-    //{ //TURN OFF RELAY
-    //  waterLevelUpCount = 0;
-    //  Serial.println("motor turned off");
-    //  digitalWrite(MOTOR_CONTROL_PIN, LOW); //Relay is active LOW
-    //  digitalWrite(LED, LOW); // turn the LED on
-    //  if (motorEnabled) timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
-    //  motorEnabled = false;
-    //}
-  }
-  void runPeriodicFunc()
-  {
-    static const unsigned long REFRESH_INTERVAL1 = 1000;
-    static unsigned long lastRefreshTime1 = 0;
-    //*****
-    if (isTimeSynchronized) {
-      timeval tod;
-      if (gettimeofday(&tod, nullptr) == 0) {
-        uint32_t tods = (tod.tv_sec + MyTimeZoneSec) % 86400;
-        if (onAlarm1Enabled && tods_old != 0 && tods_old < onAlarm1TODsec && tods >= onAlarm1TODsec)
-          motorAutoOn();
-        else if (onAlarm2Enabled && tods_old != 0 && tods_old < onAlarm2TODsec && tods >= onAlarm2TODsec)
-          motorAutoOn();
-        tods_old = tods;
-      } else {
-        Serial.println("Bad time");
-      }
+  distance = duration * CM_PER_USEC_HALF;
+  float delta = tankTopCm - tankBottomCm;
+  delta = delta == 0 ? 0 : 1 / delta;
+  percent = 100 * (distance - tankBottomCm) * delta;
+
+  // debuging:
+  //Serial.println(String("durationX ") + duration + ", distance "+distance + " delta " +delta + ", percent " + percent);
+  //distance = 140;
+  //percent = 100 * (distance - tankBottomCm) * delta;
+  //Serial.println(String("durationX ") + duration + ", distance "+distance + " delta " +delta + ", percent " + percent + ", onAlarm1TODsec " + onAlarm1TODsec + ", onAlarm2TODsec " + onAlarm2TODsec);
+}
+void measure_Volume()
+{
+  ultrasonic();
+  liters = percent;
+  //Serial.println(liters);
+
+  if (liters <= waterLevelLowerThreshold)
+    waterLevelDownCount++;
+  else waterLevelDownCount = 0;
+
+  if (liters >= waterLevelUpperThreshold)
+    waterLevelUpCount++;
+  else waterLevelUpCount = 0;
+
+  if (waterLevelDownCount >= 3)
+    motorAutoOn();
+  if (waterLevelUpCount >= 3)
+    motorOff();
+  //if (waterLevelDownCount >= 3)
+  //{ //TURN ON RELAY
+  //  waterLevelDownCount = 0;
+  //  Serial.println("motor turned on");
+  //  digitalWrite(MOTOR_CONTROL_PIN, HIGH); //Relay is active HIGH
+  //  digitalWrite(LED, HIGH); // turn the LED on
+  //  motorEnabled = true;
+  //  timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
+  //}
+  //if (waterLevelUpCount >= 3)
+  //{ //TURN OFF RELAY
+  //  waterLevelUpCount = 0;
+  //  Serial.println("motor turned off");
+  //  digitalWrite(MOTOR_CONTROL_PIN, LOW); //Relay is active LOW
+  //  digitalWrite(LED, LOW); // turn the LED on
+  //  if (motorEnabled) timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
+  //  motorEnabled = false;
+  //}
+}
+void runPeriodicFunc()
+{
+  static const unsigned long REFRESH_INTERVAL1 = 1000;
+  static unsigned long lastRefreshTime1 = 0;
+  //*****
+  if (isTimeSynchronized) {
+    timeval tod;
+    if (gettimeofday(&tod, nullptr) == 0) {
+      uint32_t tods = (tod.tv_sec + MyTimeZoneSec) % 86400;
+      if (onAlarm1Enabled && tods_old != 0 && tods_old < onAlarm1TODsec && tods >= onAlarm1TODsec)
+        motorAutoOn();
+      else if (onAlarm2Enabled && tods_old != 0 && tods_old < onAlarm2TODsec && tods >= onAlarm2TODsec)
+        motorAutoOn();
+      tods_old = tods;
+    } else {
+      Serial.println("Bad time");
     }
-    //*****
-    unsigned long currentTimeMS = millis(), deltaMS = currentTimeMS - timeOfDayLastMS;
-    if (timerMotorCooldown > 0) {
-      timerMotorCooldown -= deltaMS;
-      if (timerMotorCooldown < 0 )
-        timerMotorCooldown = 0;
-    }
-    if (motorEnabled) {
-        if (isMotorEnabledAuto)
-          timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
-        if (timerMotorAutoOff > 0) {
-          timerMotorAutoOff -= deltaMS;
-          if (timerMotorAutoOff < 1) {
-            timerMotorAutoOff = 0;
-            motorOff();
-          }
+  }
+  //*****
+  unsigned long currentTimeMS = millis(), deltaMS = currentTimeMS - timeOfDayLastMS;
+  if (timerMotorCooldown > 0) {
+    timerMotorCooldown -= deltaMS;
+    if (timerMotorCooldown < 0 )
+      timerMotorCooldown = 0;
+  }
+  if (motorEnabled) {
+      if (isMotorEnabledAuto)
+        timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
+      if (timerMotorAutoOff > 0) {
+        timerMotorAutoOff -= deltaMS;
+        if (timerMotorAutoOff < 1) {
+          timerMotorAutoOff = 0;
+          motorOff();
         }
-    } else
-      timerMotorAutoOff = 0;
-    timeOfDayLastMS = currentTimeMS;
-    //*****
-    if (millis() - lastRefreshTime1 >= REFRESH_INTERVAL1)
-    {
-      measure_Volume();
-      lastRefreshTime1 = millis();
-    }
-    if (!motorEnabled) 
-    digitalWrite(MOTOR_CONTROL_PIN, LOW);
-  
-   }
-  
-
+      }
+  } else
+    timerMotorAutoOff = 0;
+  timeOfDayLastMS = currentTimeMS;
+  //*****
+  if (millis() - lastRefreshTime1 >= REFRESH_INTERVAL1)
+  {
+    measure_Volume();
+    lastRefreshTime1 = millis();
+  }
+  if (!motorEnabled) 
+  digitalWrite(MOTOR_CONTROL_PIN, LOW);
+}
 void setup() {
   EEPROM.begin(512);
   delay(10);
@@ -293,7 +288,6 @@ void setup() {
 
   LoadFromEEPROM();
 }
-
 void checkLEDstatus(){
   if (WiFi.status() == WL_CONNECTED){
     digitalWrite(wifiPin, HIGH);
@@ -329,13 +323,11 @@ void motorOn(bool autoOn) {
   SaveToEEPROM(EE_motorEnabled);
   if (isMotorEnabledAuto) timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
 }
-
 void motorAutoOn() {
   if (!motorEnabled && timerMotorCooldown == 0 && liters <= waterLevelUpperThreshold) {// only enable motor if is not enabled and is not in cooldown time
     motorOn(true);
   }
 }
-
 void motorOff() {
   if (motorEnabled && isMotorEnabledAuto) timerMotorCooldown = timerMotorCooldownStart; // reset motor cooldown
   Serial.println("motor turned off");
@@ -344,7 +336,6 @@ void motorOff() {
   motorEnabled = false;
   SaveToEEPROM(EE_motorEnabled);
 }
-
 String getContentType(String filename) {
   if (filename.endsWith(F(".htm"))) return F("text/html");
   else if (filename.endsWith(F(".html"))) return F("text/html");
@@ -362,7 +353,6 @@ String getContentType(String filename) {
   else if (filename.endsWith(F(".gz"))) return F("application/x-gzip");
   return F("text/plain");
 }
-
 bool handleFileRead(String path) {
   Serial.print(F("handleFileRead: "));
   Serial.println(path);
@@ -390,7 +380,6 @@ bool handleFileRead(String path) {
   Serial.println(String(F("\tFile Not Found: ")) + path);
   return false;                     // If the file doesn't exist, return false
 }
-
 void handleNotFound() {
   String message = "File Not Found\n\n";
   message += "URI: ";
@@ -408,7 +397,6 @@ void handleNotFound() {
 
   httpServer.send(404, "text/plain", message);
 }
-
 void handleLogin() {
   Serial.println("Handle login");
   String msg;
@@ -441,7 +429,6 @@ void handleLogin() {
     return;
   }
 }
-
 /**
    Manage logout (simply remove correct token and redirect to login form)
 */
@@ -453,7 +440,6 @@ void handleLogout() {
   httpServer.send(301);
   return;
 }
-
 /**
    Retrieve temperature humidity realtime data
 */
@@ -477,12 +463,24 @@ void handleTemperatureHumidity() {
   // comment upper line and decomment this line
   //  doc["humidity"] = random(10,80);
   //  doc["temp"] = random(1000,3500)/100.;
+  Serial.print("waterlevel : ");
+  Serial.println(doc["waterLevel"]);
+  Serial.print("motorStatus : ";
+  Serial.println(doc["motorStatus"] );
+  Serial.print("isTimeSynchronized :");
+  Serial.println(doc["isTimeSynchronized"]);
+  Serial.print("timerMotorAutoOff :");
+  Serial.println(doc["timerMotorAutoOff"]);
+  Serial.print("timerMotorCooldown :");
+  Serial.println(doc["timerMotorCooldown"]);
+  Serial.print("tod :");
+  Serial.println(doc["tod"]);
+
 
   String buf;
   serializeJson(doc, buf);
   httpServer.send(200, F("application/json"), buf);
 }
-
 //Check if header is present and correct
 bool is_authenticated() {
   Serial.println("Enter is_authenticated");
@@ -503,7 +501,6 @@ bool is_authenticated() {
   Serial.println("Authentication Failed");
   return false;
 }
-
 bool manageSecurity() {
   if (!is_authenticated()) {
     httpServer.send(401, F("application/json"), "{\"msg\": \"You must authenticate!\"}");
@@ -511,7 +508,6 @@ bool manageSecurity() {
   }
   return true;
 }
-
 bool manageSecuritySend(String fileName, String contentType, HTTPMethod requestMethod) {
   if (!is_authenticated()) {
     httpServer.sendHeader("Location", "/login.html?msg=Authentication required");
@@ -523,7 +519,6 @@ bool manageSecuritySend(String fileName, String contentType, HTTPMethod requestM
   httpServer.streamFile(file, contentType, requestMethod);
   return true;
 }
-
 void restEndPoint() {
   // External rest end point (out of authentication)
 
@@ -553,7 +548,6 @@ void restEndPoint() {
   httpServer.on(UriRegex("^\\/tankBottomCm\\/([0-9]+)$" ),        HTTP_GET, [&httpServer, &tankBottomCm]    (){ /*if (!manageSecurity()) return;*/ tankBottomCm = strtoul(httpServer.pathArg(0).c_str(), nullptr, 10);                     SaveToEEPROM(EE_tankBottomCm); });
 
 }
-
 void serverRouting() {
   restEndPoint();
 
