@@ -23,10 +23,10 @@
 
   #include <stdlib.h>
 
-  IPAddress local_IP(192, 168, 1, 196);
+  IPAddress local_IP(192, 168, 1, 20);
   // Set your Gateway IP address
   IPAddress gateway(192, 168, 1, 1);
-  IPAddress subnet(255, 255, 0, 0);
+  IPAddress subnet(255, 255, 255, 0);
   IPAddress primaryDNS(8, 8, 8, 8);   //optional
   IPAddress secondaryDNS(8, 8, 4, 4); //optional
   
@@ -249,7 +249,7 @@ void runPeriodicFunc()
     lastRefreshTime1 = millis();
   }
   if (!motorEnabled) 
-  digitalWrite(MOTOR_CONTROL_PIN, LOW);
+    digitalWrite(MOTOR_CONTROL_PIN, LOW);
 }
 void setup() {
   EEPROM.begin(512);
@@ -465,7 +465,7 @@ void handleTemperatureHumidity() {
   //  doc["temp"] = random(1000,3500)/100.;
   Serial.print("waterlevel : ");
   Serial.println(liters);
-  Serial.print("motorStatus : ";
+  Serial.print("motorStatus : ");
   Serial.println(motorEnabled);
   Serial.print("isTimeSynchronized :");
   Serial.println(isTimeSynchronized);
@@ -536,7 +536,7 @@ void restEndPoint() {
   //
   httpServer.on(         "/alarm1Enabled",                        HTTP_GET, [&httpServer, &onAlarm1Enabled] (){ /*if (!manageSecurity()) return;*/ httpServer.send(200, F("application/json"), onAlarm1Enabled ? "true" : "false"); });
   httpServer.on(         "/alarm2Enabled",                        HTTP_GET, [&httpServer, &onAlarm2Enabled] (){ /*if (!manageSecurity()) return;*/ httpServer.send(200, F("application/json"), onAlarm2Enabled ? "true" : "false"); });
-  httpServer.on(UriRegex("^\\/alarm1Enabled\\/(true|false)$" ),   HTTP_GET, [&httpServer, &onAlarm1Enabled] (){ /*if (!manageSecurity()) return;*/ onAlarm1Enabled = httpServer.pathArg(0) == "true";                                      SaveToEEPROM(EE_onAlarm1Enabled); });
+  httpServer.on(UriRegex("^\\/alarm1Enabled\\/(true|false)$" ),   HTTP_GET, [&httpServer, &onAlarm1Enabled] (){ /*if (!manageSecurity()) return;*/ onAlarm1Enabled = httpServer.pathArg(0) == "true";                                     SaveToEEPROM(EE_onAlarm1Enabled); });
   httpServer.on(UriRegex("^\\/alarm2Enabled\\/(true|false)$" ),   HTTP_GET, [&httpServer, &onAlarm2Enabled] (){ /*if (!manageSecurity()) return;*/ onAlarm2Enabled = httpServer.pathArg(0) == "true";                                      SaveToEEPROM(EE_onAlarm2Enabled); });
   httpServer.on(         "/alarm1TODsec",                         HTTP_GET, [&httpServer, &onAlarm1TODsec]  (){ /*if (!manageSecurity()) return;*/ httpServer.send(200, F("application/json"), String(onAlarm1TODsec, DEC)); });
   httpServer.on(         "/alarm2TODsec",                         HTTP_GET, [&httpServer, &onAlarm2TODsec]  (){ /*if (!manageSecurity()) return;*/ httpServer.send(200, F("application/json"), String(onAlarm2TODsec, DEC)); });
