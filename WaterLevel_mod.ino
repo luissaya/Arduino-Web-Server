@@ -1,16 +1,16 @@
 
-  #include <ESP8266WiFi.h>
-  #include <WiFiManager.h>
-  #include <EEPROM.h>
-  #include <HCSR04.h>
-  
-  #include <FS.h>
-  #include "Hash.h"
-  #include <ArduinoJson.h>
-  
-  #define WEBSERVER_H
-  #include <ESPAsyncTCP.h>
-  #include <ESPAsyncWebServer.h>
+#include <ESP8266WiFi.h>
+#include <WiFiManager.h>
+#include <EEPROM.h>
+#include <HCSR04.h>
+
+#include <FS.h>
+#include "Hash.h"
+#include <ArduinoJson.h>
+
+#define WEBSERVER_H
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 //#include <ESPAsyncUDP.h>          
 // https://github.com/me-no-dev/ESPAsyncUDP.git
@@ -19,57 +19,57 @@
 #include <coredecls.h>
 #include <time.h>
 
-  //#include <WiFiUdp.h>
+//#include <WiFiUdp.h>
 
-  #include <stdlib.h>
+#include <stdlib.h>
 
-  IPAddress local_IP(192, 168, 1, 20);
-  // Set your Gateway IP address
-  IPAddress gateway(192, 168, 1, 1);
-  IPAddress subnet(255, 255, 255, 0);
-  IPAddress primaryDNS(8, 8, 8, 8);   //optional
-  IPAddress secondaryDNS(8, 8, 4, 4); //optional
-  
-  const char* www_username = "admin";
-  const char* www_password = "esp8266";
-  
-  const int trigPin = 12;
-  const int echoPin = 13;
-  int wifiPin = 15;
-  int motorLED = 4; // Assign LED pin i.e: D8 on NodeMCU
-  #define MOTOR_CONTROL_PIN 14
-  
-  long duration;
-  int distance;
-  int percent;
-  
-  char* host = "Smart_Wifi";
-  WiFiManager wm;
-  
-  ESP8266WebServer httpServer(80);
-  
-  AsyncWebServer server(80);
-  void serverRouting();
-   
-  HCSR04 distanceSensor(12, 13); // trig, echo D6,D7
+IPAddress local_IP(192, 168, 1, 20);
+// Set your Gateway IP address
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);   //optional
+IPAddress secondaryDNS(8, 8, 4, 4); //optional
 
-  uint8_t tankTopCm = 45;
-  uint8_t tankBottomCm = 155;
-  
-  int waterLevelLowerThreshold = 20;
-  int waterLevelUpperThreshold = 90;
-  
-  //float volume = 0;
-  int liters = 0;
-  int waterLevelDownCount = 0, waterLevelUpCount = 0;
-  
-  #define EE_MOTOR_STATUS 10
-  bool motorEnabled;
-  bool isMotorEnabledAuto;
-  
-  // Timer variables
-  unsigned long lastTime = 0;
-  unsigned long timerDelay = 5000;
+const char* www_username = "admin";
+const char* www_password = "esp8266";
+
+const int trigPin = 12;
+const int echoPin = 13;
+int wifiPin = 15;
+int motorLED = 4; // Assign LED pin i.e: D8 on NodeMCU
+#define MOTOR_CONTROL_PIN 14
+
+long duration;
+int distance;
+int percent;
+
+char* host = "Smart_Wifi";
+WiFiManager wm;
+
+ESP8266WebServer httpServer(80);
+
+AsyncWebServer server(80);
+void serverRouting();
+
+HCSR04 distanceSensor(12, 13); // trig, echo D6,D7
+
+uint8_t tankTopCm = 45;
+uint8_t tankBottomCm = 155;
+
+int waterLevelLowerThreshold = 20;
+int waterLevelUpperThreshold = 90;
+
+//float volume = 0;
+int liters = 0;
+int waterLevelDownCount = 0, waterLevelUpCount = 0;
+
+#define EE_MOTOR_STATUS 10
+bool motorEnabled;
+bool isMotorEnabledAuto;
+
+// Timer variables
+unsigned long lastTime = 0;
+unsigned long timerDelay = 5000;
 
 
 void motorAutoOn();
@@ -430,7 +430,7 @@ void handleLogin() {
   }
 }
 /**
-   Manage logout (simply remove correct token and redirect to login form)
+Manage logout (simply remove correct token and redirect to login form)
 */
 void handleLogout() {
   Serial.println("Disconnection");
@@ -441,7 +441,7 @@ void handleLogout() {
   return;
 }
 /**
-   Retrieve temperature humidity realtime data
+Retrieve temperature humidity realtime data
 */
 void handleTemperatureHumidity() {
   //Serial.println("handleTemperatureHumidity");
@@ -546,7 +546,6 @@ void restEndPoint() {
   httpServer.on(         "/tankBottomCm",                         HTTP_GET, [&httpServer, &tankBottomCm]    (){ /*if (!manageSecurity()) return;*/ httpServer.send(200, F("application/json"), String(tankBottomCm, DEC)); });
   httpServer.on(UriRegex("^\\/tankTopCm\\/([0-9]+)$" ),           HTTP_GET, [&httpServer, &tankTopCm]       (){ /*if (!manageSecurity()) return;*/ tankTopCm = strtoul(httpServer.pathArg(0).c_str(), nullptr, 10);                        SaveToEEPROM(EE_tankTopCm); });
   httpServer.on(UriRegex("^\\/tankBottomCm\\/([0-9]+)$" ),        HTTP_GET, [&httpServer, &tankBottomCm]    (){ /*if (!manageSecurity()) return;*/ tankBottomCm = strtoul(httpServer.pathArg(0).c_str(), nullptr, 10);                     SaveToEEPROM(EE_tankBottomCm); });
-
 }
 void serverRouting() {
   restEndPoint();
