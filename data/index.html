@@ -206,13 +206,13 @@
 		}
 
 		.info_bg {
-			font-size: 1.0rem;
+			font-size: 1.5rem;
 			font-family: Arial, Helvetica, sans-serif;
 			background-color: #5cbdea;
 			padding: 5px;
-			/*add this if you want a bit of space around the text*/
+			margin-top: 5px;
+			/*add this i you want a bit of space around the text*/
 		}
-
 		a.c1 {
 			padding: 5px;
 			border-radius: 5px;
@@ -273,13 +273,15 @@
 							<input type="checkbox" onchange="myFunction()" id="enableBt">
 							<span class="slider round"></span>
 						</label>
-						<div><span class="info_bg"><span id="element_timer"></span></span></div>
 					</div>
 					<h3> <span <u />Auto OFF Timer</u> </span> </h3>
 				</div>
 				<div><span id="element_extra" class="extra01"></span></div>
 				<div><span class="orange_bg"><span id="element_cooldown"></span></span></div>
-				<h2>
+				<div id="container_last_on">
+					<h3> <span <u />Last on</u> </span> </h3>
+					<span class="info_bg"><span id="element_timer"></span></span>
+				</div>
 					<p <span class="white_bg"><u />AppTech Creators, DHURI</p> </u>
 				</h2>
 			</div>

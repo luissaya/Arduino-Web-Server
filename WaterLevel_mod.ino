@@ -127,12 +127,12 @@ void LoadFromEEPROM() {
       Serial.println("STA Failed to configure");
     }
 
-  Serial.print("initializing Wi-Fi");
-  WiFi.hostname(host);
-  wm.setConnectTimeout(20); // how long to try to connect for before continuing
-  wm.setConfigPortalTimeout(60); // auto close configportal after n seconds
-  wm.setAPClientCheck(true); // avoid timeout if client connected to softap
-  bool res = wm.autoConnect(host);
+    Serial.print("initializing Wi-Fi");
+    WiFi.hostname(host);
+    wm.setConnectTimeout(20); // how long to try to connect for before continuing
+    wm.setConfigPortalTimeout(60); // auto close configportal after n seconds
+    wm.setAPClientCheck(true); // avoid timeout if client connected to softap
+    bool res = wm.autoConnect(host);
 
     if (!res) {
       Serial.println("Failed to connect or hit timeout");
@@ -277,7 +277,7 @@ void setup() {
   }
 
   Serial.println("Set routing for http server!");
-  serverRouting();
+  serverRouting(); ///////////////////// inicialize server routing
 
   httpServer.begin();
   Serial.println("HTTP server started");
