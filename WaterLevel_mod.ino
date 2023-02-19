@@ -50,7 +50,7 @@
   
   AsyncWebServer server(80);
   void serverRouting();
-   
+
   HCSR04 distanceSensor(12, 13); // trig, echo D6,D7
 
   uint8_t tankTopCm = 45;
@@ -308,11 +308,10 @@ void checkLEDstatus(){
   
 }
 void loop(void) {
-  
   runPeriodicFunc();
   checkLEDstatus();
   httpServer.handleClient();
-   
+  
 }
 void motorOn(bool autoOn) {
   isMotorEnabledAuto = autoOn;
