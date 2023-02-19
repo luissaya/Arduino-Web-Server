@@ -254,7 +254,7 @@
 	</style>
 </head>
 
-<body>
+<body onload="ServerRuntime()">
 	<div class="content">
 		<div id="div_status">
 			<div class="card">
@@ -279,8 +279,16 @@
 				<div><span id="element_extra" class="extra01"></span></div>
 				<div><span class="orange_bg"><span id="element_cooldown"></span></span></div>
 				<div id="container_last_on">
-					<h3> <span <u />Last on</u> </span> </h3>
+					<h3> <span <u />Last Switch on</u> </span> </h3>
 					<span class="info_bg"><span id="element_timer"></span></span>
+				</div>
+				<div id="container_last_off">
+					<h3> <span <u />Last Switch off</u> </span> </h3>
+					<span class="info_bg"><span id="element_timer2"></span></span>
+				</div>
+				<div id="container_runtime">
+					<h3> <span <u />Last Runtime</u> </span> </h3>
+					<span class="info_bg"><span id="runtime"></span></span>
 				</div>
 					<p <span class="white_bg"><u />AppTech Creators, DHURI</p> </u>
 				</h2>
@@ -295,17 +303,23 @@
 			var sliderImageElements = document.querySelectorAll(".slide-wrapper");
 			var holderElement = document.querySelector(".holder");
 			var animateElements = document.querySelectorAll('.animate');
+			// timer last on y last off
 			var timerElement = document.getElementById('element_timer');
-
-
+			var timerElement2 = document.getElementById('element_timer2');
+			var timerRuntime = document.getElementById('runtime');
 
 			var container = document.getElementById('humidity-container');
 			var hw = new Widget.Humidity(container, 0);
 			hw.draw();
 			var motorEnabled;
+			// timer last on y last off
 			var myTimer = null;
+			var myTimer2 = null;
+			var myTimer3 = null;
 			var seconds = 0;
-
+			var seconds2 = 0;
+			var seconds3 = 0;
+			seconds3 = localStorage.getItem('time');
 		</script>
 
 		<script>
@@ -317,10 +331,22 @@
 				const parts = value.split(`; ${name}=`);
 				if (parts.length === 2) return parts.pop().split(';').shift();
 			}
-
+			//function for runtime
+			function ServerRuntime(){
+				myTimer3 = setInterval(function () {
+					seconds3++;
+					//parse seconds into 00:00:00 format
+					let time = new Date(seconds3 * 1000).toISOString().substr(11, 8);
+					localStorage.setItem('time',seconds3);
+					timerRuntime.innerHTML = time;
+				}, 1000);
+			}
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
+					clearInterval(myTimer2);
+					seconds2 = 0;
+					//timer switch on
 					myTimer = setInterval(function () {
 						seconds++;
 						//parse seconds into 00:00:00 format
@@ -330,6 +356,13 @@
 				} else {
 					clearInterval(myTimer);
 					seconds = 0;
+					//timer switch off
+					myTimer2 = setInterval(function () {
+						seconds2++;
+						//parse seconds into 00:00:00 format
+						let time = new Date(seconds2 * 1000).toISOString().substr(11, 8);
+						timerElement2.innerHTML = time;
+					}, 1000);
 				}
 
 				var xhr = new XMLHttpRequest();
