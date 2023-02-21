@@ -254,7 +254,7 @@
 	</style>
 </head>
 
-<body onload="ServerRuntime()">
+<body onload="SavedTimes()">
 	<div class="content">
 		<div id="div_status">
 			<div class="card">
@@ -320,6 +320,15 @@
 			// var seconds2 = 0;
 			// var seconds3 = 0;
 			// seconds3 = localStorage.getItem('time');
+			var todayOn = null;
+			var todayOff = null;
+			var lastOn = null;
+			var lastOff = null;
+			var runtime = null;
+			
+			// lastOn = localStorage.getItem('LastOn');
+			// lastOff = localStorage.getItem('LastOff');
+			// runtime = localStorage.getItem('Runtime');
 		</script>
 
 		<script>
@@ -330,6 +339,12 @@
 				const value = `; ${document.cookie}`;
 				const parts = value.split(`; ${name}=`);
 				if (parts.length === 2) return parts.pop().split(';').shift();
+			}
+			//funtion for getting saved times values
+			function SavedTimes(){
+				timerElement.textContent = localStorage.getItem('LastOn');
+				timerElement2.textContent = localStorage.getItem('LastOff');
+				timerRuntime.innerHTML = localStorage.getItem('Runtime');
 			}
 			//function for runtime
 			// function ServerRuntime(){
@@ -344,11 +359,17 @@
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
-					var lastOn = JSON.parse(xhttp.responseText).tod;
+					todayOn = new Date();
+					let hourOn = todayOn.getHours();
+					let minutesOn = todayOn.getMinutes();
+					let secondsOn = todayOn.getSeconds();
+					lastOn = printhour(hourOn,minutesOn,secondsOn);
+					
+					// var lastOn = JSON.parse(xhttp.responseText).tod;
 					//parse seconds into 00:00:00 format
-					localStorage.setItem('LastOn',lastOn);
-					// timerElement2.innerHTML = lastOn;
-			
+					// timerElement.innerHTML = lastOn;
+					// localStorage.setItem('LastOn',lastOn);
+
 					// clearInterval(myTimer2);
 					// seconds2 = 0;
 					// //timer switch on
@@ -359,13 +380,27 @@
 					// 	timerElement.innerHTML = time;
 					// }, 1000);
 				} else {
-					var lastOff = JSON.parse(xhttp.responseText).tod;
-					//parse seconds into 00:00:00 format
-					localStorage.setItem('LastOff',lastOff);
+					todayOff = new Date();
+					let hourOff = todayOff.getHours();
+					let minutesOff = todayOff.getMinutes();
+					let secondsOff = todayOff.getSeconds();
+					lastOff = printhour(hourOff,minutesOff,secondsOff);
 
-					timerElement.innerHTML = localStorage.getItem('LastOn');
-					timerElement2.innerHTML = localStorage.getItem('LastOff');
-					timerRuntime.innerHTML = localStorage.getItem('LastOff') - localStorage.getItem('LastOn');
+					timerElement.textContent = lastOn;
+					timerElement2.textContent = lastOff;
+					runtime = intervalTime(todayOn,todayOff);
+					timerRuntime.innerHTML = runtime;
+					localStorage.setItem('LastOn',lastOn);
+					localStorage.setItem('LastOff',lastOff);
+					localStorage.setItem('Runtime',runtime);
+
+					// lastOff = JSON.parse(xhttp.responseText).tod;
+					// //parse seconds into 00:00:00 format
+					// localStorage.setItem('LastOff',lastOff);
+
+					// timerElement.innerHTML = localStorage.getItem('LastOn');
+					// timerElement2.innerHTML = localStorage.getItem('LastOff');
+					// timerRuntime.innerHTML = localStorage.getItem('LastOff') - localStorage.getItem('LastOn');
 
 					// clearInterval(myTimer);
 					// seconds = 0;
@@ -382,6 +417,35 @@
 				if (motorEnabled) xhr.open("GET", "/off", true);
 				else xhr.open("GET", "/on", true);
 				xhr.send();
+			}
+			function printhour(hour,minutes,seconds){
+				if (hour=12) {
+					return hour + ":" + addZero(minutes) + ":" + addZero(seconds) + " PM";
+				} else if(hour>12){
+					hour -= 12;
+					return hour + ":" + addZero(minutes) + ":" + addZero(seconds) + " PM";
+				} else {
+					return addZero(hour)+ ":" + addZero(minutes) + ":" + addZero(seconds) + " AM";
+				}
+			}
+			function intervalTime(time1,time2){
+				let diffTime = Math.abs(time1.valueOf() - time2.valueOf());
+				let days = diffTime / (24*60*60*1000);
+				let hours = (days % 1) * 24;
+				let minutes = (hours % 1) * 60;
+				let secs = (minutes % 1) * 60;
+				[days, hours, minutes, secs] = [Math.floor(days), Math.floor(hours), Math.floor(minutes), Math.floor(secs)]
+				hours = addZero(hours);
+				minutes = addZero(minutes);
+				secs = addZero(secs);
+				return hours + ':' + minutes + ":" + secs;
+			}
+			function addZero(num){
+				if (num < 10){
+					return  "0" + num;
+				}else{
+					return num;
+				}
 			}
 			function getURL(url) {
 				var xhr = new XMLHttpRequest();
