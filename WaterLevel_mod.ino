@@ -462,18 +462,20 @@ void handleTemperatureHumidity() {
   // comment upper line and decomment this line
   //  doc["humidity"] = random(10,80);
   //  doc["temp"] = random(1000,3500)/100.;
-  Serial.print("waterlevel : ");
-  Serial.println(liters);
-  Serial.print("motorStatus : ");
-  Serial.println(motorEnabled);
-  Serial.print("isTimeSynchronized :");
-  Serial.println(isTimeSynchronized);
-  Serial.print("timerMotorAutoOff :");
-  Serial.println(timerMotorAutoOff / 1000);
-  Serial.print("timerMotorCooldown :");
-  Serial.println(timerMotorCooldown / 1000);
-  Serial.print("tod :");
-  Serial.println(tods_old);
+
+  
+  // Serial.print("waterlevel : ");
+  // Serial.println(liters);
+  // Serial.print("motorStatus : ");
+  // Serial.println(motorEnabled);
+  // Serial.print("isTimeSynchronized :");
+  // Serial.println(isTimeSynchronized);
+  // Serial.print("timerMotorAutoOff :");
+  // Serial.println(timerMotorAutoOff / 1000);
+  // Serial.print("timerMotorCooldown :");
+  // Serial.println(timerMotorCooldown / 1000);
+  // Serial.print("tod :");
+  // Serial.println(tods_old);
 
 
   String buf;

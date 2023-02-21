@@ -313,13 +313,13 @@
 			hw.draw();
 			var motorEnabled;
 			// timer last on y last off
-			var myTimer = null;
-			var myTimer2 = null;
-			var myTimer3 = null;
-			var seconds = 0;
-			var seconds2 = 0;
-			var seconds3 = 0;
-			seconds3 = localStorage.getItem('time');
+			// var myTimer = null;
+			// var myTimer2 = null;
+			// var myTimer3 = null;
+			// var seconds = 0;
+			// var seconds2 = 0;
+			// var seconds3 = 0;
+			// seconds3 = localStorage.getItem('time');
 		</script>
 
 		<script>
@@ -332,37 +332,50 @@
 				if (parts.length === 2) return parts.pop().split(';').shift();
 			}
 			//function for runtime
-			function ServerRuntime(){
-				myTimer3 = setInterval(function () {
-					seconds3++;
-					//parse seconds into 00:00:00 format
-					let time = new Date(seconds3 * 1000).toISOString().substr(11, 8);
-					localStorage.setItem('time',seconds3);
-					timerRuntime.innerHTML = time;
-				}, 1000);
-			}
+			// function ServerRuntime(){
+			// 	myTimer3 = setInterval(function () {
+			// 		seconds3++;
+			// 		//parse seconds into 00:00:00 format
+			// 		let time = new Date(seconds3 * 1000).toISOString().substr(11, 8);
+			// 		localStorage.setItem('time',seconds3);
+			// 		timerRuntime.innerHTML = time;
+			// 	}, 1000);
+			// }
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
-					clearInterval(myTimer2);
-					seconds2 = 0;
-					//timer switch on
-					myTimer = setInterval(function () {
-						seconds++;
-						//parse seconds into 00:00:00 format
-						let time = new Date(seconds * 1000).toISOString().substr(11, 8);
-						timerElement.innerHTML = time;
-					}, 1000);
+					var lastOn = JSON.parse(xhttp.responseText).tod;
+					//parse seconds into 00:00:00 format
+					localStorage.setItem('LastOn',lastOn);
+					// timerElement2.innerHTML = lastOn;
+			
+					// clearInterval(myTimer2);
+					// seconds2 = 0;
+					// //timer switch on
+					// myTimer = setInterval(function () {
+					// 	seconds++;
+					// 	//parse seconds into 00:00:00 format
+					// 	let time = new Date(seconds * 1000).toISOString().substr(11, 8);
+					// 	timerElement.innerHTML = time;
+					// }, 1000);
 				} else {
-					clearInterval(myTimer);
-					seconds = 0;
-					//timer switch off
-					myTimer2 = setInterval(function () {
-						seconds2++;
-						//parse seconds into 00:00:00 format
-						let time = new Date(seconds2 * 1000).toISOString().substr(11, 8);
-						timerElement2.innerHTML = time;
-					}, 1000);
+					var lastOff = JSON.parse(xhttp.responseText).tod;
+					//parse seconds into 00:00:00 format
+					localStorage.setItem('LastOff',lastOff);
+
+					timerElement.innerHTML = localStorage.getItem('LastOn');
+					timerElement2.innerHTML = localStorage.getItem('LastOff');
+					timerRuntime.innerHTML = localStorage.getItem('LastOff') - localStorage.getItem('LastOn');
+
+					// clearInterval(myTimer);
+					// seconds = 0;
+					// //timer switch off
+					// myTimer2 = setInterval(function () {
+					// 	seconds2++;
+					// 	//parse seconds into 00:00:00 format
+					// 	let time = new Date(seconds2 * 1000).toISOString().substr(11, 8);
+					// 	timerElement2.innerHTML = time;
+					// }, 1000);
 				}
 
 				var xhr = new XMLHttpRequest();
@@ -444,7 +457,7 @@
 				console.log(inpt, vld);
 				inpt.addEventListener('change', evt => { vld.innerText = '(' + evt.target.value + ')'; console.log(vld, vld.innerText, evt.target.value); getURL('/' + name + '/' + evt.target.value); });
 				setting_refreshers.push(() => getURLSync('/' + name, (is_ok, value_read_callback, value) => {
-					inpt.value = '(' + value + ')';
+					inpt.value = '(' + value + ')';tankBottomCm
 					vld.innerText = value;
 					inpt.disabled = false;
 				}, -1));
