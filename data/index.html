@@ -312,23 +312,13 @@
 			var hw = new Widget.Humidity(container, 0);
 			hw.draw();
 			var motorEnabled;
-			// timer last on y last off
-			// var myTimer = null;
-			// var myTimer2 = null;
-			// var myTimer3 = null;
-			// var seconds = 0;
-			// var seconds2 = 0;
-			// var seconds3 = 0;
-			// seconds3 = localStorage.getItem('time');
+			//timers
 			var todayOn = null;
 			var todayOff = null;
 			var lastOn = null;
 			var lastOff = null;
 			var runtime = null;
-			
-			// lastOn = localStorage.getItem('LastOn');
-			// lastOff = localStorage.getItem('LastOff');
-			// runtime = localStorage.getItem('Runtime');
+
 		</script>
 
 		<script>
@@ -346,16 +336,6 @@
 				timerElement2.textContent = localStorage.getItem('LastOff');
 				timerRuntime.innerHTML = localStorage.getItem('Runtime');
 			}
-			//function for runtime
-			// function ServerRuntime(){
-			// 	myTimer3 = setInterval(function () {
-			// 		seconds3++;
-			// 		//parse seconds into 00:00:00 format
-			// 		let time = new Date(seconds3 * 1000).toISOString().substr(11, 8);
-			// 		localStorage.setItem('time',seconds3);
-			// 		timerRuntime.innerHTML = time;
-			// 	}, 1000);
-			// }
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
@@ -364,21 +344,6 @@
 					let minutesOn = todayOn.getMinutes();
 					let secondsOn = todayOn.getSeconds();
 					lastOn = printhour(hourOn,minutesOn,secondsOn);
-					
-					// var lastOn = JSON.parse(xhttp.responseText).tod;
-					//parse seconds into 00:00:00 format
-					// timerElement.innerHTML = lastOn;
-					// localStorage.setItem('LastOn',lastOn);
-
-					// clearInterval(myTimer2);
-					// seconds2 = 0;
-					// //timer switch on
-					// myTimer = setInterval(function () {
-					// 	seconds++;
-					// 	//parse seconds into 00:00:00 format
-					// 	let time = new Date(seconds * 1000).toISOString().substr(11, 8);
-					// 	timerElement.innerHTML = time;
-					// }, 1000);
 				} else {
 					todayOff = new Date();
 					let hourOff = todayOff.getHours();
@@ -393,24 +358,6 @@
 					localStorage.setItem('LastOn',lastOn);
 					localStorage.setItem('LastOff',lastOff);
 					localStorage.setItem('Runtime',runtime);
-
-					// lastOff = JSON.parse(xhttp.responseText).tod;
-					// //parse seconds into 00:00:00 format
-					// localStorage.setItem('LastOff',lastOff);
-
-					// timerElement.innerHTML = localStorage.getItem('LastOn');
-					// timerElement2.innerHTML = localStorage.getItem('LastOff');
-					// timerRuntime.innerHTML = localStorage.getItem('LastOff') - localStorage.getItem('LastOn');
-
-					// clearInterval(myTimer);
-					// seconds = 0;
-					// //timer switch off
-					// myTimer2 = setInterval(function () {
-					// 	seconds2++;
-					// 	//parse seconds into 00:00:00 format
-					// 	let time = new Date(seconds2 * 1000).toISOString().substr(11, 8);
-					// 	timerElement2.innerHTML = time;
-					// }, 1000);
 				}
 
 				var xhr = new XMLHttpRequest();
@@ -419,10 +366,10 @@
 				xhr.send();
 			}
 			function printhour(hour,minutes,seconds){
-				if (hour=12) {
+				if (hour == 12) {
 					return hour + ":" + addZero(minutes) + ":" + addZero(seconds) + " PM";
-				} else if(hour>12){
-					hour -= 12;
+				} else if(hour > 12){
+					hour = hour - 12;
 					return hour + ":" + addZero(minutes) + ":" + addZero(seconds) + " PM";
 				} else {
 					return addZero(hour)+ ":" + addZero(minutes) + ":" + addZero(seconds) + " AM";
