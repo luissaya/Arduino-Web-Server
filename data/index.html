@@ -312,14 +312,17 @@
 			var hw = new Widget.Humidity(container, 0);
 			hw.draw();
 			var motorEnabled;
+
 			// timer last on y last off
-			var myTimer = null;
-			var myTimer2 = null;
-			var myTimer3 = null;
-			var seconds = 0;
-			var seconds2 = 0;
-			var seconds3 = 0;
-			seconds3 = localStorage.getItem('time');
+			var myTimeOn = null;
+			var myTimeOff = null;
+			var myRuntime = null;
+			var timeOnFormat = null;
+			var timeOffFormat = null;
+			var runtimeFormat = null;
+			timeOnFormat = localStorage.getItem('timeOnFormat');
+			timeOffFormat = localStorage.getItem('timeOffFormat');
+			runtimeFormat = localStorage.getItem('runtimeFormat');
 		</script>
 
 		<script>
@@ -331,45 +334,54 @@
 				const parts = value.split(`; ${name}=`);
 				if (parts.length === 2) return parts.pop().split(';').shift();
 			}
-			//function for runtime
-			function ServerRuntime(){
-				myTimer3 = setInterval(function () {
-					seconds3++;
-					//parse seconds into 00:00:00 format
-					let time = new Date(seconds3 * 1000).toISOString().substr(11, 8);
-					localStorage.setItem('time',seconds3);
-					timerRuntime.innerHTML = time;
-				}, 1000);
-			}
+
+			//function for last on and off
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
-					clearInterval(myTimer2);
-					seconds2 = 0;
-					//timer switch on
-					myTimer = setInterval(function () {
-						seconds++;
-						//parse seconds into 00:00:00 format
-						let time = new Date(seconds * 1000).toISOString().substr(11, 8);
-						timerElement.innerHTML = time;
-					}, 1000);
+					myTimeOn =  getTime();
+					timeOnFormat = formatTime(myTimeOn);
 				} else {
-					clearInterval(myTimer);
-					seconds = 0;
-					//timer switch off
-					myTimer2 = setInterval(function () {
-						seconds2++;
-						//parse seconds into 00:00:00 format
-						let time = new Date(seconds2 * 1000).toISOString().substr(11, 8);
-						timerElement2.innerHTML = time;
-					}, 1000);
+					myTimeOff = getTime();
+					timeOffFormat = formatTime(myTimeOff);
+					runtimeFormat = formatTime(myTimeOff-myTimeOn);
+					timerElement.innerHTML = timeOnFormat;
+					timerElement2.innerHTML = timeOffFormat;
+					timerRuntime.innerHTML = runtimeFormat;
+					localStorage.setItem('timeOnFormat',timeOnFormat);
+					localStorage.setItem('timeOffFormat',timeOffFormat);
+					localStorage.setItem('runtimeFormat',runtimeFormat);
 				}
-
 				var xhr = new XMLHttpRequest();
 				if (motorEnabled) xhr.open("GET", "/off", true);
 				else xhr.open("GET", "/on", true);
 				xhr.send();
 			}
+
+			function formatTime(time) {
+					var sec_num = parseInt(time, 10); // don't forget the second param
+					var hours   = Math.floor(sec_num / 3600);
+					var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+					var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+					if (hours   < 10) {hours   = "0"+hours;}
+					if (minutes < 10) {minutes = "0"+minutes;}
+					if (seconds < 10) {seconds = "0"+seconds;}
+					return hours+':'+minutes+':'+seconds;
+			}
+
+			function getTime(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						// Typical action to be performed when the document is ready:
+						var res = JSON.parse(xhttp.responseText);
+						var time = res.tod;
+					}	
+				}
+				return time;
+			}
+
 			function getURL(url) {
 				var xhr = new XMLHttpRequest();
 				xhr.open("GET", url, true);
