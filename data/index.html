@@ -346,7 +346,8 @@
 					} else {
 						getTime(function(myTimeOff) {
 							timeOffFormat = formatTime(myTimeOff);
-							runtimeFormat = myTimeOff - myTimeOn;
+							myRuntime = parseInt(myTimeOff, 10) - parseInt(myTimeOn, 10);
+							runtimeFormat =	formatTime(myRuntime);
 							timerElement.innerHTML = timeOnFormat;
 							timerElement2.innerHTML = timeOffFormat;
 							timerRuntime.innerHTML = runtimeFormat;
