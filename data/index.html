@@ -341,7 +341,7 @@
 				if (motorEnabled) {
 						getTime(function(myTimeOn) {
 							timeOnFormat = formatTime(myTimeOn);
-							timerElement.innerHTML = timeOnFormat;
+							// timerElement.innerHTML = timeOnFormat;
 						});
 					} else {
 						getTime(function(myTimeOff) {
@@ -407,7 +407,7 @@
 						callback(time);
 					}
 				};
-				xhttp.open("GET", "/time", true);
+				xhttp.open("GET", "/temperatureHumidity", true);
 				xhttp.send();
 			}
 
