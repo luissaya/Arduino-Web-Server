@@ -339,19 +339,21 @@
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
-						getTime(function(myTimeOn) {
-							timeOnFormat = formatTime(myTimeOn);
+						getTime(function(timeOn) {
+							myTimeOn = timeOn;
+							timeOnFormat = formatTime(timeOn);
 							// timerElement.innerHTML = myTimeOn;
 						});
 					} else {
-						getTime(function(myTimeOff) {
-							timeOffFormat = formatTime(myTimeOff);
+						getTime(function(timeOff) {
+							myTimeOff = timeOff;
+							timeOffFormat = formatTime(timeOff);
 							myRuntime = parseInt(myTimeOff, 10) - parseInt(myTimeOn, 10);
 							console.log(myTimeOn);
 							console.log(myTimeOff);
 							console.log(myRuntime);
-							// runtimeFormat =	formatTime(String(myRuntime));
-							runtimeFormat =	String(myRuntime);
+							runtimeFormat =	formatTime(String(myRuntime));
+							// runtimeFormat =	String(myRuntime);
 							timerElement.innerHTML = timeOnFormat;
 							timerElement2.innerHTML = timeOffFormat;
 							timerRuntime.innerHTML = runtimeFormat;
