@@ -339,28 +339,52 @@
 			function myFunction() {
 				motorEnabled = !motorEnabled;
 				if (motorEnabled) {
-					myTimeOn =  getTime();
-					timeOnFormat = formatTime(myTimeOn);
-					timerElement.innerHTML = myTimeOn;
-				} else {
-					myTimeOff = getTime();
-					timeOffFormat = formatTime(myTimeOff);
-					runtimeFormat = formatTime(myTimeOff-myTimeOn);
-					timerElement.innerHTML = timeOnFormat;
-					timerElement2.innerHTML = timeOffFormat;
-					timerRuntime.innerHTML = runtimeFormat;
-					// timerElement.innerHTML = myTimeOn;
-					// timerElement2.innerHTML = myTimeOff
-					// timerRuntime.innerHTML = myTimeOff-myTimeOn;
-					localStorage.setItem('timeOnFormat',timeOnFormat);
-					localStorage.setItem('timeOffFormat',timeOffFormat);
-					localStorage.setItem('runtimeFormat',runtimeFormat);
+						getTime(function(myTimeOn) {
+							timeOnFormat = formatTime(myTimeOn);
+							timerElement.innerHTML = timeOnFormat;
+						});
+					} else {
+						getTime(function(myTimeOff) {
+							timeOffFormat = formatTime(myTimeOff);
+							runtimeFormat = formatTime(myTimeOff-myTimeOn);
+							timerElement.innerHTML = timeOnFormat;
+							timerElement2.innerHTML = timeOffFormat;
+							timerRuntime.innerHTML = runtimeFormat;
+							localStorage.setItem('timeOnFormat',timeOnFormat);
+							localStorage.setItem('timeOffFormat',timeOffFormat);
+							localStorage.setItem('runtimeFormat',runtimeFormat);
+						});
+					}
+					var xhr = new XMLHttpRequest();
+					if (motorEnabled) xhr.open("GET", "/off", true);
+					else xhr.open("GET", "/on", true);
+					xhr.send();
 				}
-				var xhr = new XMLHttpRequest();
-				if (motorEnabled) xhr.open("GET", "/off", true);
-				else xhr.open("GET", "/on", true);
-				xhr.send();
-			}
+			// function myFunction() {
+			// 	motorEnabled = !motorEnabled;
+			// 	if (motorEnabled) {
+			// 		myTimeOn =  getTime();
+			// 		timeOnFormat = formatTime(myTimeOn);
+			// 		timerElement.innerHTML = myTimeOn;
+			// 	} else {
+			// 		myTimeOff = getTime();
+			// 		timeOffFormat = formatTime(myTimeOff);
+			// 		runtimeFormat = formatTime(myTimeOff-myTimeOn);
+			// 		timerElement.innerHTML = timeOnFormat;
+			// 		timerElement2.innerHTML = timeOffFormat;
+			// 		timerRuntime.innerHTML = runtimeFormat;
+			// 		// timerElement.innerHTML = myTimeOn;
+			// 		// timerElement2.innerHTML = myTimeOff
+			// 		// timerRuntime.innerHTML = myTimeOff-myTimeOn;
+			// 		localStorage.setItem('timeOnFormat',timeOnFormat);
+			// 		localStorage.setItem('timeOffFormat',timeOffFormat);
+			// 		localStorage.setItem('runtimeFormat',runtimeFormat);
+			// 	}
+			// 	var xhr = new XMLHttpRequest();
+			// 	if (motorEnabled) xhr.open("GET", "/off", true);
+			// 	else xhr.open("GET", "/on", true);
+			// 	xhr.send();
+			// }
 
 			function formatTime(time) {
 					var sec_num = parseInt(time, 10); // don't forget the second param
@@ -374,17 +398,17 @@
 					return hours+':'+minutes+':'+seconds;
 			}
 
-			function getTime(){
+			function getTime(callback) {
 				var xhttp = new XMLHttpRequest();
-				var time = null;
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						// Typical action to be performed when the document is ready:
 						var res = JSON.parse(this.responseText);
-						time = res.tod;
-					}	
-				}
-				return time;
+						var time = res.tod;
+						callback(time);
+					}
+				};
+				xhttp.open("GET", "/time", true);
+				xhttp.send();
 			}
 
 			function getURL(url) {
