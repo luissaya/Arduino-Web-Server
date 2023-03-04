@@ -341,7 +341,7 @@
 				if (motorEnabled) {
 						getTime(function(myTimeOn) {
 							timeOnFormat = formatTime(myTimeOn);
-							// timerElement.innerHTML = timeOnFormat;
+							timerElement.innerHTML = myTimeOn;
 						});
 					} else {
 						getTime(function(myTimeOff) {
@@ -403,13 +403,27 @@
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
 						var res = JSON.parse(this.responseText);
-						var time = res.tod;
+						var time = parseInt(res.tod);
 						callback(time);
 					}
 				};
 				xhttp.open("GET", "/temperatureHumidity", true);
 				xhttp.send();
 			}
+
+			// function getTime() {
+			// 	var xhttp = new XMLHttpRequest();
+			// 	var time = null;
+			// 	xhttp.onreadystatechange = function() {
+			// 		if (this.readyState == 4 && this.status == 200) {
+			// 			var res = JSON.parse(this.responseText);
+			// 			time = parseInt(res.tod);
+			// 		}
+			// 	};
+			// 	xhttp.open("GET", "/temperatureHumidity", true);
+			// 	xhttp.send();
+			// 	return time;
+			// }
 
 			function getURL(url) {
 				var xhr = new XMLHttpRequest();
