@@ -349,7 +349,7 @@
 							myTimeOff = time;
 							timeOffFormat = formatTime(time);
 							myRuntime = parseInt(myTimeOff, 10) - parseInt(myTimeOn, 10);
-							runtimeFormat =	formatTime(String(myRuntime));
+							runtimeFormat =	formatRuntime(String(myRuntime));
 							timerElement.innerHTML = timeOnFormat;
 							timerElement2.innerHTML = timeOffFormat;
 							timerRuntime.innerHTML = runtimeFormat;
@@ -364,7 +364,7 @@
 					xhr.send();
 				}
 
-			//function for converting the time from seconds to HH:MM:SS
+			//function for converting the time from seconds to HH:MM:SS AM/PM
 			function formatTime(time) {
 					var sec_num = parseInt(time, 10); // don't forget the second param
 					var hours   = Math.floor(sec_num / 3600);
@@ -384,6 +384,19 @@
 						if (hours   < 10) {hours   = "0"+hours;};
 						return hours+':'+minutes+':'+seconds+'PM';
 					}
+			}
+			//function for converting the runtime from seconds to HH:MM:SS
+			function formatRuntime(time) {
+					var sec_num = parseInt(time, 10); // don't forget the second param
+					var hours   = Math.floor(sec_num / 3600);
+					var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+					var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+					if (hours   < 10) {hours   = "0"+hours;};
+					if (minutes < 10) {minutes = "0"+minutes;}
+					if (seconds < 10) {seconds = "0"+seconds;}
+
+					return hours+':'+minutes+':'+seconds;
 			}
 			//function for getting the time from the backend(arduino)
 			function getTime(callback) {
