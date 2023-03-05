@@ -320,9 +320,10 @@
 			var timeOnFormat = null;
 			var timeOffFormat = null;
 			var runtimeFormat = null;
-			// timeOnFormat = localStorage.getItem('timeOnFormat');
-			// timeOffFormat = localStorage.getItem('timeOffFormat');
-			// runtimeFormat = localStorage.getItem('runtimeFormat');
+			//get the last times saved
+			timerElement.innerHTML = localStorage.getItem('timeOnFormat');
+			timerElement2.innerHTML = localStorage.getItem('timeOffFormat');
+			timerRuntime.innerHTML = localStorage.getItem('runtimeFormat');
 		</script>
 
 		<script>
@@ -342,29 +343,13 @@
 						getTime(function(time) {
 							myTimeOn = time;
 							timeOnFormat = formatTime(time);
-							// timerElement.innerHTML = myTimeOn;
-							console.log("Time variable before:");
-							console.log(time);
-							console.log("Time on before:");
-							console.log(myTimeOn);
 						});
 					} else {
 						getTime(function(time) {
 							myTimeOff = time;
 							timeOffFormat = formatTime(time);
 							myRuntime = parseInt(myTimeOff, 10) - parseInt(myTimeOn, 10);
-							console.log("Time variable after:");
-							console.log(time);
-							console.log("Time on after:");
-							console.log(myTimeOn);
-							console.log(timeOnFormat);
-							console.log("Time off after:");
-							console.log(myTimeOff);
-							console.log(timeOffFormat);
-							console.log(myRuntime);
-							
 							runtimeFormat =	formatTime(String(myRuntime));
-							// runtimeFormat =	String(myRuntime);
 							timerElement.innerHTML = timeOnFormat;
 							timerElement2.innerHTML = timeOffFormat;
 							timerRuntime.innerHTML = runtimeFormat;
@@ -378,32 +363,8 @@
 					else xhr.open("GET", "/on", true);
 					xhr.send();
 				}
-			// function myFunction() {
-			// 	motorEnabled = !motorEnabled;
-			// 	if (motorEnabled) {
-			// 		myTimeOn =  getTime();
-			// 		timeOnFormat = formatTime(myTimeOn);
-			// 		timerElement.innerHTML = myTimeOn;
-			// 	} else {
-			// 		myTimeOff = getTime();
-			// 		timeOffFormat = formatTime(myTimeOff);
-			// 		runtimeFormat = formatTime(myTimeOff-myTimeOn);
-			// 		timerElement.innerHTML = timeOnFormat;
-			// 		timerElement2.innerHTML = timeOffFormat;
-			// 		timerRuntime.innerHTML = runtimeFormat;
-			// 		// timerElement.innerHTML = myTimeOn;
-			// 		// timerElement2.innerHTML = myTimeOff
-			// 		// timerRuntime.innerHTML = myTimeOff-myTimeOn;
-			// 		localStorage.setItem('timeOnFormat',timeOnFormat);
-			// 		localStorage.setItem('timeOffFormat',timeOffFormat);
-			// 		localStorage.setItem('runtimeFormat',runtimeFormat);
-			// 	}
-			// 	var xhr = new XMLHttpRequest();
-			// 	if (motorEnabled) xhr.open("GET", "/off", true);
-			// 	else xhr.open("GET", "/on", true);
-			// 	xhr.send();
-			// }
 
+			//function for converting the time from seconds to HH:MM:SS
 			function formatTime(time) {
 					var sec_num = parseInt(time, 10); // don't forget the second param
 					var hours   = Math.floor(sec_num / 3600);
@@ -415,7 +376,7 @@
 					if (seconds < 10) {seconds = "0"+seconds;}
 					return hours+':'+minutes+':'+seconds;
 			}
-
+			//function for getting the time from the backend(arduino)
 			function getTime(callback) {
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
@@ -428,20 +389,6 @@
 				xhttp.open("GET", "/temperatureHumidity", true);
 				xhttp.send();
 			}
-
-			// function getTime() {
-			// 	var xhttp = new XMLHttpRequest();
-			// 	var time = null;
-			// 	xhttp.onreadystatechange = function() {
-			// 		if (this.readyState == 4 && this.status == 200) {
-			// 			var res = JSON.parse(this.responseText);
-			// 			time = parseInt(res.tod);
-			// 		}
-			// 	};
-			// 	xhttp.open("GET", "/temperatureHumidity", true);
-			// 	xhttp.send();
-			// 	return time;
-			// }
 
 			function getURL(url) {
 				var xhr = new XMLHttpRequest();
